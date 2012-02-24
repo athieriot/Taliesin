@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+
+/**
+* Tool designed to ease dialog with your Software Factory
+*/
+
+var program = require('commander');
+
+program
+   .version('0.0.1')
+   .option('-b, --branch [master]', 'branch to work with')
+   .option('-v, --verbose', 'display debug informations')
+
+program
+   .command('build [id]')
+   .description('launch build on the CI server')
+   .action(function(id) {
+      id = id || '';
+      console.log('launch build', id);
+      console.log('on branch %s', program.branch || 'master');
+   });
+
+program.parse(process.argv);
