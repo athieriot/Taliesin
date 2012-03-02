@@ -6,16 +6,18 @@
 
 program = require 'commander'
 winston = require 'winston'
-teamcity = require 'lib/teamcity'
+teamcity = require './lib/teamcity'
+
+default_branch = 'master'
 
 initLogger = (verbose) ->
-   new winston.Logger {
+   new winston.Logger({
       transports: [
          new (winston.transports.Console) {
-            level: if verbose then "debug" else "info"
+            level: if verbose then "verbose" else "info"
          }
       ]
-   }
+   }).cli()
 
 program
    .version('0.0.1')
@@ -24,12 +26,12 @@ program
 
 program
    .command('build [id]')
-   .description('launch build on the CI server')
+   .description('launch builds on your Continuous Integration server')
    .action((id) ->
-      logger = initLogger(program.verbose)
-      teamcity.build(id, program.branch)
-      logger.info 'info test'
-      logger.debug 'debug test'
+      logger = initLogger program.verbose
+      
+      logger.verbose 'Enter build command'
+      teamcity.build id, program.branch || default_branch, logger
    )
 
 program.parse process.argv

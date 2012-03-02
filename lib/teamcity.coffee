@@ -1,9 +1,14 @@
-build (id, branch) ->
-   console.log "Successful module"
-   console.log 'launch build', id
-   console.log 'on branch %s', branch || 'master')
+build = (id, branch, logger) ->
+   if id?
+      logger.verbose "Build requested for #{id} on branch #{branch}"
+   else
+      logger.error "No id provided"
 
-module.exportsi = {
+
+deploy = (id, branch, logger) ->
+   logger.info "Not supported yet"
+
+module.exports = {
    build: build,
-   deploy: undefined
+   deploy: deploy
 }
