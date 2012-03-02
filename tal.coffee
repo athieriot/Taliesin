@@ -6,6 +6,7 @@
 
 program = require 'commander'
 winston = require 'winston'
+teamcity = require 'lib/teamcity'
 
 initLogger = (verbose) ->
    new winston.Logger {
@@ -21,16 +22,14 @@ program
    .option('-b, --branch [master]', 'branch to work with')
    .option('-v, --verbose', 'display debug informations')
 
-
 program
    .command('build [id]')
    .description('launch build on the CI server')
    .action((id) ->
       logger = initLogger(program.verbose)
-      id = id || ''
+      teamcity.build(id, program.branch)
       logger.info 'info test'
       logger.debug 'debug test'
-      console.log 'launch build', id
-      console.log 'on branch %s', program.branch || 'master')
+   )
 
 program.parse process.argv
