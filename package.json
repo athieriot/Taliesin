@@ -17,7 +17,8 @@
     "url": "git://github.com/athieriot/taliesin.git"
   },
   "dependencies": {
-    "commander": "0.5.1" 
+    "commander": "0.5.1",
+    "winston": "0.5.10"
   },
   "devDependencies": {
     "coffee-script": "1.2.0"
