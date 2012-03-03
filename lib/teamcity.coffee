@@ -1,5 +1,6 @@
 http = require 'http'
 url = require 'url'
+commons = require './commons'
 
 hostname = 'teamcity.vidal.net'
 username = 'athieriot'
@@ -10,18 +11,18 @@ options =
    headers:
       Authorization: "Basic #{new Buffer("#{username}:#{password}").toString("base64")}"
       Accept: 'application/json'
-settings = 
-   host: teamcity_url.hostname
-   port: teamcity_url.port || 80
-   path: teamcity_url.pathname
-   headers: options.headers || {}
-   method: options.method || 'GET'
 
-add_2_queue = (id, branch, callback, error) ->
+add_2_queue = (id, branch) ->
+   settings = 
+      host: teamcity_url.hostname
+      port: teamcity_url.port || 80
+      path: teamcity_url.pathname
+      headers: options.headers || {}
+      method: options.method || 'GET'
+
    settings.path += "?add2Queue=#{id}"
    if branch? then settings.path += "&env.name=BRANCH&env.value=#{branch}"
    settings
-
 
 build = (id, branch, logger) ->
    if id?
@@ -36,7 +37,6 @@ build = (id, branch, logger) ->
    else
       logger.error "No id provided"
       process.exit 1
-
 
 deploy = (id, branch, logger) ->
    logger.info "Not supported yet"
