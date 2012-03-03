@@ -25,11 +25,11 @@ add_2_queue = (id, branch, callback, error) ->
 
 build = (id, branch, logger) ->
    if id?
-      logger.verbose "Build requested for #{id} on branch #{branch}"
+      logger.verbose "Build requested for #{id}" + if branch? then " on branch #{branch}" else ''
       teamcity_settings = add_2_queue id, branch
 
       http.get teamcity_settings, (res) ->
-         logger.info "Build #{id} successfuly launched on branch #{branch}"
+         logger.info "Build #{id} successfuly launched" + if branch? then " on branch #{branch}" else ''
       .on 'error', (e) ->
          logger.error "An error append when requesting build #{id} : #{e.message}"
          process.exit 2

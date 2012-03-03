@@ -8,8 +8,6 @@ program = require 'commander'
 winston = require 'winston'
 teamcity = require './lib/teamcity'
 
-default_branch = 'master'
-
 initLogger = (verbose) ->
    new winston.Logger({
       transports: [
@@ -31,7 +29,7 @@ program
       logger = initLogger program.verbose
       
       logger.verbose 'Enter build command'
-      teamcity.build id, program.branch || default_branch, logger
+      teamcity.build id, program.branch, logger
    )
 
 program.parse process.argv
