@@ -17,19 +17,20 @@ settings =
    headers: options.headers || {}
    method: options.method || 'GET'
 
-add_2_teamcity_queue = (id, branch, callback, error) ->
+add_2_queue = (id, branch, callback, error) ->
    settings.path += "?add2Queue=#{id}"
-   settings.path += "&env.name=BRANCH&env.value=#{branch}"
+   if branch? then settings.path += "&env.name=BRANCH&env.value=#{branch}"
+   settings
 
-   http.get(settings, callback).on('error', error) 
 
 build = (id, branch, logger) ->
    if id?
       logger.verbose "Build requested for #{id} on branch #{branch}"
+      teamcity_settings = add_2_queue id, branch
 
-      add_2_teamcity_queue id, branch, (res) ->
+      http.get teamcity_settings, (res) ->
          logger.info "Build #{id} successfuly launched on branch #{branch}"
-      , (e) ->
+      .on 'error', (e) ->
          logger.error "An error append when requesting build #{id} : #{e.message}"
          process.exit 2
    else
@@ -43,5 +44,8 @@ deploy = (id, branch, logger) ->
 
 module.exports = {
    build: build,
-   deploy: deploy
+   deploy: deploy,
+   test: {
+      add_2_queue
+   }
 }
