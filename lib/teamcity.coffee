@@ -2,15 +2,11 @@ http = require 'http'
 url = require 'url'
 commons = require './commons'
 
-hostname = 'teamcity.vidal.net'
-username = 'athieriot'
-password = 'bA75sT57gA'
-
-add_2_queue = (id, branch, success) ->
-   teamcity_url = url.parse "http://#{hostname}/httpAuth/action.html"
+compute_settings = (id, branch, service_conf, success) ->
+   teamcity_url = url.parse "http://#{service_conf.hostname}/httpAuth/action.html"
    options = 
       headers:
-         Authorization: "Basic #{new Buffer("#{username}:#{password}").toString("base64")}"
+         Authorization: "Basic #{new Buffer("#{service_conf.username}:#{service_conf.password}").toString("base64")}"
          Accept: 'application/json'
 
    settings = 
@@ -25,10 +21,21 @@ add_2_queue = (id, branch, success) ->
 
    success settings
 
+add_2_queue = (id, branch, conf, success, error) ->
+   commons.logger.verbose 'Your Teamcity configuration is : ' + JSON.stringify conf
+
+   if commons.valid_properties conf, 'hostname', 'username', 'password'
+      compute_settings id, branch, conf, success
+   else
+      error 'You need to configure your Teamcity credentials'
+
 build = (id, branch, success, error) ->
    if id?
-      add_2_queue id, branch, (teamcity_settings) ->
-         http.get(teamcity_settings, success).on('error', error)
+      commons.configuration (conf) ->
+         add_2_queue id, branch, conf, (teamcity_settings) ->
+            http.get(teamcity_settings, success).on('error', error)
+         , (message) ->
+            error {message: message}
    else
       error {message: 'No Id provided'}
 
@@ -39,6 +46,7 @@ module.exports = {
    build: build,
    deploy: deploy,
    test: {
-      add_2_queue
+      compute_settings: compute_settings,
+      add_2_queue: add_2_queue
    }
 }
