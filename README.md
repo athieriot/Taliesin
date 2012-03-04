@@ -1,17 +1,8 @@
 # Taliesin
 
+[![Build Status](https://secure.travis-ci.org/myint/perceptualdiff.png?branch=master)](http://travis-ci.org/myint/perceptualdiff)
+
 Taliesin is a simple tool to help launching build and deploy on Continuous Integration systems
-
-## Compatibility
-
-### Teamcity
-
-To make Taliesin work with teamcity, you need to configure your credentials
-The default configuration file is ~/.taliesin.properties
-
-- hostname. Will be the url to your Teamcity server
-- username
-- password
 
 ## Usage
 
@@ -30,3 +21,15 @@ Options:
 -V, --version          output the version number
 -b, --branch [master]  branch to work with
 -v, --verbose          display debug informations
+
+## Compatibility
+
+### Teamcity
+
+To make Taliesin work with teamcity, you need to configure your credentials.
+
+The default configuration file is ~/.taliesin.properties
+
+- hostname. Will be the url to your Teamcity server
+- username
+- password
