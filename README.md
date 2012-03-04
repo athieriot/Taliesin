@@ -31,3 +31,8 @@ The default configuration file is ~/.taliesin.properties
 - hostname. Will be the url to your Teamcity server
 - username
 - password
+
+Also, if you want to use the "-b branch" feature, you will need to made server side modifications.
+
+But it's pretty simple: Your VCS source can accept an environnement variable as a branch name.
+Call it env.BRANCH and set a default value for your target project.
