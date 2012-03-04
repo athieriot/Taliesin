@@ -25,11 +25,16 @@ program
 program
    .command('build [id]')
    .description('launch builds on your Continuous Integration server')
-   .action((id) ->
+   .action (id) ->
       logger = initLogger program.verbose
-      
-      logger.verbose 'Enter build command'
-      teamcity.build id, program.branch, logger
-   )
+      branch = program.branch
+
+      logger.verbose "Build requested for #{id}" + if branch? then " on branch #{branch}" else ''
+
+      teamcity.build id, program.branch, (res) ->
+         logger.info "Build #{id} successfuly launched" + if branch? then " on branch #{branch}" else ''
+      , (e) ->
+         logger.error "An error append when requesting build #{id} : #{e.message}"
+         process.exit 1
 
 program.parse process.argv

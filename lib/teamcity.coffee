@@ -24,23 +24,15 @@ add_2_queue = (id, branch) ->
    if branch? then settings.path += "&env.name=BRANCH&env.value=#{branch}"
    settings
 
-build = (id, branch, logger) ->
+build = (id, branch, success, error) ->
    if id?
-      logger.verbose "Build requested for #{id}" + if branch? then " on branch #{branch}" else ''
       teamcity_settings = add_2_queue id, branch
-
-      http.get teamcity_settings, (res) ->
-         logger.info "Build #{id} successfuly launched" + if branch? then " on branch #{branch}" else ''
-      .on 'error', (e) ->
-         logger.error "An error append when requesting build #{id} : #{e.message}"
-         process.exit 2
+      http.get(teamcity_settings, success).on('error', error)
    else
-      logger.error "No id provided"
-      process.exit 1
+      error {message: 'No Id provided'}
 
-deploy = (id, branch, logger) ->
-   logger.info "Not supported yet"
-   process.exit 1
+deploy = (id, branch, success, error) ->
+   error {message: 'Not supported yet'}
 
 module.exports = {
    build: build,
