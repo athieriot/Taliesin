@@ -19,10 +19,8 @@ describe 'Commons', () ->
       it 'should initialize the logger', () ->
          commons.init_logger()
          should.exist commons.logger
-         commons.test.reset_logger()
 
       it 'should set verbose level if needed', () ->
          commons.init_logger(true)
          should.exist commons.logger
          commons.logger.transports['console'].level.should.equal 'verbose'
-         commons.test.reset_logger()
