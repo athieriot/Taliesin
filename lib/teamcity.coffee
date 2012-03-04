@@ -4,6 +4,7 @@ commons = require './commons'
 
 compute_settings = (id, branch, service_conf, success) ->
    teamcity_url = url.parse "http://#{service_conf.hostname}/httpAuth/action.html"
+
    options = 
       headers:
          Authorization: "Basic #{new Buffer("#{service_conf.username}:#{service_conf.password}").toString("base64")}"
@@ -22,8 +23,6 @@ compute_settings = (id, branch, service_conf, success) ->
    success settings
 
 add_2_queue = (id, branch, conf, success, error) ->
-   commons.logger.verbose 'Your Teamcity configuration is : ' + JSON.stringify conf
-
    if commons.valid_properties conf, 'hostname', 'username', 'password'
       compute_settings id, branch, conf, success
    else
@@ -32,7 +31,12 @@ add_2_queue = (id, branch, conf, success, error) ->
 build = (id, branch, success, error) ->
    if id?
       commons.configuration (conf) ->
+         commons.logger.verbose 'Your Teamcity configuration is : ' + JSON.stringify conf
+
          add_2_queue id, branch, conf, (teamcity_settings) ->
+            commons.logger.verbose "Complete url : #{teamcity_settings.host}:#{teamcity_settings.port}#{teamcity_settings.path}"
+            commons.logger.verbose "Complete header : #{JSON.stringify teamcity_settings.headers}"
+
             http.get(teamcity_settings, success).on('error', error)
          , (message) ->
             error {message: message}
