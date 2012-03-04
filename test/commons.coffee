@@ -9,7 +9,7 @@ describe 'Commons', () ->
             done()
          , 'dontexist', false
 
-      it 'should return properties', (done) ->
+      it 'should return properties in a file', (done) ->
          commons.configuration (expected) ->
             expected.should.have.property 'key', 'value'
             done()
@@ -24,3 +24,13 @@ describe 'Commons', () ->
          commons.init_logger(true)
          should.exist commons.logger
          commons.logger.transports['console'].level.should.equal 'verbose'
+
+   describe '#valid_properties', () ->
+      it 'should return true if all present', () ->
+         valid_one = {test: 'ok', other: 'ok'}
+         expected = commons.valid_properties valid_one, 'test', 'other'
+         expected.should.be.true
+      it 'should return false if at least one miss', () ->
+         valid_one = {test: 'ok', other: 'ok'}
+         expected = commons.valid_properties valid_one, 'missing', 'test', 'other', 'yo'
+         expected.should.not.be.true

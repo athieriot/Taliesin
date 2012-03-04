@@ -6,13 +6,13 @@ hostname = 'teamcity.vidal.net'
 username = 'athieriot'
 password = 'bA75sT57gA'
 
-teamcity_url = url.parse "http://#{hostname}/httpAuth/action.html"
-options = 
-   headers:
-      Authorization: "Basic #{new Buffer("#{username}:#{password}").toString("base64")}"
-      Accept: 'application/json'
+add_2_queue = (id, branch, success) ->
+   teamcity_url = url.parse "http://#{hostname}/httpAuth/action.html"
+   options = 
+      headers:
+         Authorization: "Basic #{new Buffer("#{username}:#{password}").toString("base64")}"
+         Accept: 'application/json'
 
-add_2_queue = (id, branch) ->
    settings = 
       host: teamcity_url.hostname
       port: teamcity_url.port || 80
@@ -22,12 +22,13 @@ add_2_queue = (id, branch) ->
 
    settings.path += "?add2Queue=#{id}"
    if branch? then settings.path += "&env.name=BRANCH&env.value=#{branch}"
-   settings
+
+   success settings
 
 build = (id, branch, success, error) ->
    if id?
-      teamcity_settings = add_2_queue id, branch
-      http.get(teamcity_settings, success).on('error', error)
+      add_2_queue id, branch, (teamcity_settings) ->
+         http.get(teamcity_settings, success).on('error', error)
    else
       error {message: 'No Id provided'}
 

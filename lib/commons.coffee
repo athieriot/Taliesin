@@ -24,8 +24,14 @@ init_logger = (verbose = false) ->
       ]
    }).cli()
 
+valid_properties = (object, props...) ->
+   result = true
+   result = result and prop of object for prop in props
+   result
+
 module.exports = {
    configuration: configuration,
    init_logger: init_logger,
-   logger: @logger
+   logger: @logger,
+   valid_properties: valid_properties
 }
